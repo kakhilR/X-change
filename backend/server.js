@@ -10,7 +10,7 @@ app.get('/api',(req,res)=>{
 })
 
 const db = require('./config/keys.js').MongoURI
-mongoose.connect(db,{useNewUrlParser:true,useUnifiedTopology: true,useCreateIndex:true})
+mongoose.connect(db,{useNewUrlParser:true,useCreateIndex:true,useUnifiedTopology: true})
 .then(()=>console.log('database connected')).catch((err)=>console.log(err))
 
 app.use(express.json())

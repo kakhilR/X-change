@@ -1,59 +1,70 @@
 const express = require('express');
 const router = express.Router();
-const User = require("../models/userModel");
-const jwt = require('jsonwebtoken')
-const { JWT_SECRET} = require('../config/keys.js')
 const bcrypt = require('bcryptjs');
+const User = require('../models/userModel.js');
+const jwt = require('jsonwebtoken');
 
 
-router.post('/signup',(req, res)=>{
-    const {name,email,password} = req.body
 
-    if(!email || !name || !password){
-        return res.status(400).json({error:"please fill the fields"})
+router.get('/protected',(req,res)=>{
+    res.send('hello')
+})
+
+router.post('/signup',(req,res)=>{
+    const {
+        name,
+        email,
+        password,} = req.body;
+    if(!email || !password ||!name){
+        return res.status(400).json({error:"all fileds are required"})
     }
-
-    User.findOne({email:email}).then((savedUser)=>{
-        if(savedUser){
-            return res.status(422).json({error:"user already exists"})
+    User.findOne({email:req.body.email}).then((user) => {
+        if(user){
+            return res.status(400).json({error:"user already exists"})
         }
-        bcrypt.hash(password,10).then(hash_password=>{
-            const user = new User({
+        bcrypt.hash(password,10).then(hashedpassword=>{
+            const _user = new User({
                 email,
-                password:hash_password,
+                password:hashedpassword,
                 name,
-                username: Math.random().toString(),
+                username:Math.random().toString()});
+            _user.save().then(data=>{
+                return res.status(200).json({message:"sucessfully registered",data})
+            }).catch(err=>{
+                return res.status(401).json({error:err.message})
             })
-                user.save().then(user=>{
-                    res.status(200).json({message:"user sucessful saved"})
-                }).catch(err=>{console.log(err)})
+
         })
-    }).catch(err=>{console.log(err)})
+    }).catch((err) =>{return res.status(401).json(err.message)})
 })
 
 router.post('/signin',(req,res)=>{
-    const {email,password}= req.body
-    if(!email || !password){
-        return res.status(422).json({message:"please enter a valid email or password"})
+    const {email,password} = req.body
+    if(!email|| !password){
+        return res.status(422).json({error:"please enter a valid email or password"})
     }
-    User.findOne({email:email}).then((savedUser)=>{
-        if(!savedUser){
-            return res.status(422).json({message:'invalid email or password'})
+    User.findOne({email:email}).then((user)=>{
+        if(!user){
+            return res.status(422).json({message:"invalid email or password"})
         }
-        bcrypt.compare(password,savedUser.password).then((doMatch)=>{
+        bcrypt.compare(password,user.password).then(doMatch=>{
             if(doMatch){
-                const token = jwt.sign({_id:savedUser.id},JWT_SECRET)
-                const {_id,name,email} = savedUser
-                res.json({
-                    token,
-                    user:{_id,name,email}
-                })
-                
+                // return res.status(200).json({message:"sucessfully logged in "})
+                const token = jwt.sign({_id: user.id,},"secret",{expiresIn:'1h'});
+                const {_id,name,email} = user;
+                res.json({token,saveduser:{_id,name,email}});
             }
             else{
-                return res.status(422).json({message:'invalid email or password'})
+                return res.status(422).json({message:"invalid email or password"})
             }
         })
-    }).catch(err =>{console.log(err)})
+    }).catch(err=>{
+        return res.status(400).json(err.message)
+    })
 })
+
+router.get('/users/list', (req, res)=>{
+    
+})
+
 module.exports = router
