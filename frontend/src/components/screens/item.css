@@ -4,10 +4,12 @@
 }
 
 
-.item-upload{
-    max-width: 600px;
-    height: 400px;
-    margin:40px auto;
-    padding:20px;
-    align-items: center;
+.uploads{
+    display:flex;
+    flex-wrap: wrap;;
+    justify-content: space-around;
+}
+
+.pic{
+    width:30%;
 }
