@@ -1,28 +1,32 @@
-import React from 'react';
-import pic from '../../mypic.jpg';
-import './user.css';
-
+import React from 'react'
+import logo from '../../logo.svg';
+import './item.css'
 const Profile = () => {
     return (
-        <div className="profile">
-           <div className ="profile-header">
-               <div>
-                   <img style ={{width:'100px',height:'100px',borderRadius:'30px',justifyContent:'space-between'}} src={pic}/>
-               </div>
-               <div>
-                   <h4>akhi</h4>
-                    <h6>my Items</h6>
-               </div>
-           </div>
-           <div className ="uploaded" >
-                <img className="upload" src={pic} />
-                <img className="upload" src={pic} />
-                <img className="upload" src={pic} />
-                <img className="upload" src={pic} />
-                <img className="upload" src={pic} />
-           </div>
+        <div style={{maxWidth:"950px",margin:"0 auto",}}>
+            <div style={{display:"flex",justifyContent:'space-around',margin:'18px 0px',borderBottom:"1px solid white"}}>
+                <div>
+                    <img style={{width:"160px",height:"160px",borderRadius: '20px'}} src={logo} alt ="pic" />
+                </div>
+                <div>
+                    <h3>Profile</h3>
+                    <div style={{display:"flex",justifyContent:"space-between",width:"108%"}}>
+                        <h5>my products</h5>
+                        <h5>product sold</h5>
+                        <h5>product bought</h5>
+                    </div>
+                </div>
+            </div>
+            <div className="uploads">
+                     <img className ="pic" src={logo} alt ="pic" />   
+                     <img className ="pic" src={logo} alt ="pic" />   
+                     <img className ="pic" src={logo} alt ="pic" />   
+                     <img className ="pic" src={logo} alt ="pic" />   
+                     <img className ="pic" src={logo} alt ="pic" />   
+                     <img className ="pic" src={logo} alt ="pic" />   
+            </div>
         </div>
     )
 }
 
-export default Profile;
+export default Profile
